@@ -1,0 +1,6 @@
+[submodule "reflexion"]
+	path = reflexion
+	url = https://github.com/noahshinn/reflexion.git
+[submodule "LanguageAgentTreeSearch"]
+	path = LanguageAgentTreeSearch
+	url = https://github.com/andyz245/LanguageAgentTreeSearch.git
