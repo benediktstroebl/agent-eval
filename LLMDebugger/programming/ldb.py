@@ -9,6 +9,8 @@ from utils import *
 import sys
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
+MODEL_BOOSTING = True
+
 def debug(i, item, log_path, model_name, num_items, pass_at_k, max_iters, port="", level = "block"):
     exe = PyExecutor()
     gen = PyGenerator()
@@ -46,6 +48,20 @@ def debug(i, item, log_path, model_name, num_items, pass_at_k, max_iters, port="
             # The output is 
             # 1. the wrong blocks [wrong block]
             # 2. the explanation [explanation]
+
+            ### INSERTED CODE BLOCK START
+            if MODEL_BOOSTING:
+                if cur_iter == 0:
+                    model = model_factory('codellama', port)
+                elif cur_iter == 1:
+                    model = model_factory('gpt-3.5-turbo-0613', port)
+                else:
+                    model = model_factory('gpt-4-1106-preview', port)
+                # print if new model gets selected
+                if cur_iter < 3:
+                    print("NEW MODEL SELECTED: ", model)
+            ### INSERTED CODE BLOCK END
+
             if dataset_type in ["HumanEval", "MBPP"]:
                 # Add comments
                 if not find_comment(cur_func_impl, item["entry_point"]):

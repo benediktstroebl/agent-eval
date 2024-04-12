@@ -97,7 +97,7 @@ def run_mcts(
     exe = executor_factory(language, is_leet=is_leetcode)
     gen = generator_factory(language)
     model = model_factory(model_name)
-    test_model = model_factory("gpt4")
+    test_model = model_factory("gpt-4-1106-preview")
     print_v = make_printv(verbose)
 
     num_items = len(dataset)
