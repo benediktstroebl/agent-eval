@@ -1,7 +1,6 @@
 dataset=$1
 model=$2
-strategy="simple"
-
+strategy="simple_boosting"
 run_names=("run1" "run2" "run3" "run4" "run5")
 for run_name in "${run_names[@]}"; do
   python main.py \

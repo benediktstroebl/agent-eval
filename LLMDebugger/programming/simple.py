@@ -5,8 +5,10 @@ from generators import PyGenerator
 from typing import List
 from filelock import FileLock
 from multiprocessing import Process, Pool
+import logging
+import time
 
-def get_seed(i, item, model, num_items, pass_at_k, gen, log_path):
+def get_seed(i, item, model, num_items, pass_at_k, gen, log_path, logger):
     print(f'[Start] {i+1}')
     exe = executor_factory("python", False)
     cur_pass = 0
@@ -44,15 +46,23 @@ def async_main(
         log_path: str,
         verbose: bool,
         testfile: str = None,
+        logger: logging.Logger = None,
     ) -> None:
     gen = PyGenerator()
-    model = model_factory(model_name)
+    model = model_factory(model_name, logger=logger)
     print_v = make_printv(verbose)
     num_items = len(dataset)
     num_success = 0
     if n_proc == 1:
         for i, item in enumerate_resume(dataset, log_path, testfile=testfile):
-            get_seed(i, item, model, num_items, pass_at_k, gen, log_path)
+            logger.info(f"Starting {i+1}th task", extra={"task_id": item["task_id"], "type": "task_started"})
+            start_time = time.time()
+            get_seed(i, item, model, num_items, pass_at_k, gen, log_path, logger)
+            end_time = time.time()
+            task_time = end_time - start_time
+            logger.info(f"Time taken for {i+1}th task: {end_time - start_time}", extra={"task_time": task_time, 
+                                                                                        "task_id": item["task_id"],
+                                                                                        "type": "task_finished"})
         return
     # divide dataset into several groups
     with Pool(n_proc) as pool:
@@ -67,6 +77,8 @@ def run_simple(
         log_path: str,
         verbose: bool,
         testfile: str = None,
+        logger: logging.Logger = None,
     ) -> None:
-    async_main(dataset, model_name, pass_at_k, n_proc, log_path, verbose, testfile)
+    async_main(dataset, model_name, pass_at_k, n_proc, log_path, verbose, testfile, logger)
     print("Accuracy:", count_solved(log_path))
+    logger.info("Finished run", extra={"accuracy": count_solved(log_path), "type": "run_finished"})

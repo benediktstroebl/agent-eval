@@ -9,6 +9,11 @@ from tenacity import (
 )
 from openai import OpenAI
 from transformers import GPT2Tokenizer, AutoTokenizer
+import time
+import os 
+import logging
+from config import TOGETHER_API_KEY
+os.environ["TOGETHER_API_KEY"] = TOGETHER_API_KEY
 
 MessageRole = Literal["system", "user", "assistant"]
 
@@ -96,8 +101,9 @@ class ModelBase():
 
 
 class GPTChat(ModelBase):
-    def __init__(self, model_name: str, key: str = ""):
+    def __init__(self, model_name: str, key: str = "", logger: logging.Logger = None):
         self.name = model_name
+        self.logger = logger
         self.is_chat = True
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         if key != "":
@@ -116,6 +122,7 @@ class GPTChat(ModelBase):
         try:
             new_messages = change_messages(self.tokenizer, messages, 3097)
             messages = new_messages
+            start_time = time.time()
             response = self.client.chat.completions.create(
                 model=self.name,
                 messages=[dataclasses.asdict(message) for message in messages],
@@ -126,12 +133,23 @@ class GPTChat(ModelBase):
                 n=num_comps,
                 stop=stop
             )
+            end_time = time.time()
+
+            self.logger.info("OpenAI API call", extra={"input_messages": [dataclasses.asdict(message) for message in messages],
+                                                            "output_messages": response.choices[0].message.content if num_comps == 1 else [choice.message.content for choice in response.choices],
+                                                           "prompt_tokens": response.usage.prompt_tokens,
+                                                           "completion_tokens": response.usage.completion_tokens, 
+                                                           "total_tokens": response.usage.total_tokens,
+                                                            "inference_time": end_time - start_time,
+                                                           "model_name": self.name,
+                                                           "type": "api_call"})
         except Exception as e:
             print("GPT Error:", str(e))
             if "context_length_exceeded" in str(e):
                 messages = change_messages(self.tokenizer, messages, 2097)
                 print("AFTER CHANGE MESSAGE LEN:", len(messages))
                 print(messages)
+                start_time = time.time()
                 response = self.client.chat.completions.create(
                     model=model,
                     messages=[dataclasses.asdict(message) for message in messages],
@@ -142,6 +160,15 @@ class GPTChat(ModelBase):
                     presence_penalty=0.0,
                     n=num_comps,
                 )
+                end_time = time.time()
+                self.logger.info("OpenAI API call", extra={"input_messages": [dataclasses.asdict(message) for message in messages],
+                                                            "output_messages": response.choices[0].message.content if num_comps == 1 else [choice.message.content for choice in response.choices],
+                                                           "prompt_tokens": response.usage.prompt_tokens,
+                                                           "completion_tokens": response.usage.completion_tokens, 
+                                                           "total_tokens": response.usage.total_tokens,
+                                                            "inference_time": end_time - start_time,
+                                                           "model_name": self.name,
+                                                           "type": "api_call"})
             else:
                 assert False, "GPT API error: " + str(e)
         if num_comps == 1:
@@ -154,13 +181,13 @@ class GPTChat(ModelBase):
 
 
 class GPT4(GPTChat):
-    def __init__(self, key):
-        super().__init__("gpt-4-1106-preview", key)
+    def __init__(self, model_name, key, logger):
+        super().__init__(model_name, key, logger)
 
 
 class GPT35(GPTChat):
-    def __init__(self, key):
-        super().__init__("gpt-3.5-turbo-0613", key)
+    def __init__(self, model_name, key, logger):
+        super().__init__(model_name, key, logger)
 
 
 class VLLMModelBase(ModelBase):
@@ -168,10 +195,13 @@ class VLLMModelBase(ModelBase):
     Base for huggingface chat models
     """
 
-    def __init__(self, model, port="8000"):
+    def __init__(self, model, port="8000", logger: logging.Logger = None):
         super().__init__(model)
         self.model = model
+        self.logger = logger
         self.vllm_client = OpenAI(api_key="EMPTY", base_url=f"http://localhost:{port}/v1")
+        self.together_client = OpenAI(api_key=os.environ.get("TOGETHER_API_KEY"), base_url="https://api.together.xyz/v1")
+
         self.tokenizer = AutoTokenizer.from_pretrained(model)
         self.max_length = 7000
     
@@ -187,7 +217,8 @@ class VLLMModelBase(ModelBase):
         while True:
             prompt = change_messages(self.tokenizer, prompt, max_length)  # StarCoder max length
             try:
-                responses = self.vllm_client.completions.create(
+                start_time = time.time()
+                responses = self.together_client.completions.create(
                     model=self.model,
                     prompt=prompt,
                     echo=False,
@@ -199,6 +230,16 @@ class VLLMModelBase(ModelBase):
                     presence_penalty=0.0,
                     n=num_comps,
                 )
+                end_time = time.time()
+                self.logger.info("Together API call", extra={"input_messages": prompt,
+                                                           "output_messages": responses.choices[0].text if num_comps == 1 else [response.choices[0].text for response in responses], 
+                                                           "prompt_tokens": responses.usage.prompt_tokens,
+                                                           "completion_tokens": responses.usage.completion_tokens, 
+                                                           "total_tokens": responses.responses.total_tokens,
+                                                            "inference_time": end_time - start_time,
+                                                           "model_name": self.model,
+                                                           "type": "api_call"})
+
             except Exception as e:
                 print("VLLM Error:", str(e))
                 if "maximum context length" in str(e):
