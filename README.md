@@ -56,87 +56,78 @@ export OPENAI_API_KEY=<your key>
 
 #### To run simple models and baselines
 
-There is different types of agent
-
 - `Simple models` -  This uses the simple strategy implemented in the code accompanying the LDB agent for zero-shot evaluations of language models (i.e., there is no agent architecture).
 
-```bash
-cd ./programming
-./run_simple.sh humaneval [model] [output_dir]
-```
+    ```bash
+    cd ./programming
+    ./run_simple.sh humaneval [model] [output_dir]
+    ```
 
  - `Escalation` - We modify the simple strategy of LDB but switch the underlying model to a more expensive one if a proposed solution fails at least one of the example tests. Running the script below, will start five runs with llama-3-8b-chat-hf, gpt-3.5-turbo-0125, ​​llama-3-70b-chat-hf, gpt-4-turbo-2024-04-09 as backend fallback models.
 
- ```bash
-cd ./programming
-./run_simple_boosting.sh humaneval [name_you_can_set]
-```
+    ```bash
+    cd ./programming
+    ./run_simple_boosting.sh humaneval [name_you_can_set]
+    ```
 
  - `Retry` - Simple strategy that repeatedly prompts the same language model, keeping all parameters equal across retrials, as long as the code outputted by the model failed at least one of the example tests.
 
-```bash
-cd ./programming
-./run_simple_repeat.sh humaneval [model] [name_you_can_set]
-```
+    ```bash
+    cd ./programming
+    ./run_simple_repeat.sh humaneval [model] [name_you_can_set]
+    ```
 
  - `Warming` - For the warming baseline, we modify the Retry baseline by gradually increasing the temperature parameter across successive trials.
 
- ```bash
+    ```bash
+    cd ./programming
+    ./run_simple_incr_temp.sh humaneval [model] [name_you_can_set]
+    ```
+
+#### To run LDB agents
+
+ - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that do not use a seed generated with Reflexion. The resulting folder containig the outputs and logs will follow the nomenclature **model**+**seedmodel**.
+
+    ```bash
+    cd ./programming
+    ./run_ldb.sh humaneval [model] [seedmodel]
+    ```
+    **Note:** This assumes that the respective seed is already in the output_data directory at the appropriate location.
+
+ - `LDB with Reflexion seed` - Use this if you want to reproduce LDB agents that use a seed generated with Reflexion. The resulting folder containig the outputs and logs will follow the nomenclature **model**+reflexion.
+
+    ```bash
+    cd ./programming
+    ./run_ldb_reflexion_seed.sh humaneval [model] [seedmodel]
+    ```
+    **Note:** This assumes that the respective seed is already in the output_data directory at the appropriate location in the `reflexion/` directory.
+
+
+### To run LATS agents
+
+ `LATS` - This reproduces our runs of the LATS agents. 
+
+```bash
 cd ./programming
-./run_simple_incr_temp.sh humaneval [model] [name_you_can_set]
+./run_lats_humaneval.sh [model] [nr_int_tests]
 ```
+**Note:** We learned from correspondence with the original authors, that the number of internal test cases was set to 6 for GPT-3.5 and 4 for GPT-4, respectively. For more details, refer to blogpost.
 
 
-#### Agent Types
+### To run Reflexion agents
 
-Agent type is determined by the notebook you choose to run. The available agent types include:
- - `ReAct` - ReAct Agent
+ `Reflexion` - This reproduces our runs of the Reflexion agents.
 
- - `CoT_context` - CoT Agent given supporting context about the question 
-
- - `CoT_no_context` - CoT Agent given no supporting context about the question
-
-The notebook for each agent type is located in the `./hotpot_runs/notebooks` directory.
-
-#### Reflexion Strategies
-
-Each notebook allows you to specify the reflexion strategy to be used by the agents. The available reflexion strategies, which are defined in an `Enum`, include:
-
- - `ReflexionStrategy.NONE` - The agent is not given any information about its last attempt. 
-
- - `ReflexionStrategy.LAST_ATTEMPT` - The agent is given its reasoning trace from its last attempt on the question as context.
-
- - `ReflexionStrategy.REFLEXION` - The agent is given its self-reflection on the last attempt as context. 
-
- - `ReflexionStrategy.LAST_ATTEMPT_AND_REFLEXION` -  The agent is given both its reasoning trace and self-reflection on the last attempt as context.
-
-### To Run: decision-making (AlfWorld)
-Clone this repo and move to the AlfWorld directory
 ```bash
-git clone https://github.com/noahshinn/reflexion && cd ./alfworld_runs
+cd ./programming
+./run_reflexion_humaneval.sh [model]
 ```
 
-Specify the run parameters in `./run_reflexion.sh`.
-`num_trials`: number of iterative learning steps
-`num_envs`: number of task-environment pairs per trial
-`run_name`: the name for this run
-`use_memory`: use persisting memory to store self-reflections (turn off to run a baseline run)
-`is_resume`: use logging directory to resume a previous run
-`resume_dir`: the logging directory from which to resume the previous run
-`start_trial_num`: if resume run, then the trial number of which to start
-
-Run the trial
-```bash
-./run_reflexion.sh
-```
-
-The logs will be sent to `./root/<run_name>`.
-
-### Another Note
+## Another Note
 
 Due to the nature of these experiments, it may not be feasible for individual developers to rerun the results as GPT-4 has limited access and significant API charges. All runs from the paper and additional results are logged in `./alfworld_runs/root` for decision-making, `./hotpotqa_runs/root` for reasoning, and `./programming_runs/root` for programming
 
-### Other Notes
+## Other Notes
 
 Check out the code for the original code [here](https://github.com/noahshinn/reflexion-draft)
 
@@ -145,16 +136,3 @@ Read a blog post [here](https://nanothoughts.substack.com/p/reflecting-on-reflex
 Check out an interesting type-prediction implementation here: [OpenTau](https://github.com/GammaTauAI/opentau)
 
 For all questions, contact [noahrshinn@gmail.com](noahrshinn@gmail.com)
-
-### Cite
-
-```bibtex
-@misc{shinn2023reflexion,
-      title={Reflexion: Language Agents with Verbal Reinforcement Learning}, 
-      author={Noah Shinn and Federico Cassano and Edward Berman and Ashwin Gopinath and Karthik Narasimhan and Shunyu Yao},
-      year={2023},
-      eprint={2303.11366},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI}
-}
-```
