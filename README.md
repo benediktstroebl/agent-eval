@@ -1,8 +1,8 @@
 # Repository to blogpost: AI leaderboards are no longer useful. It's time to switch to Pareto curves.
 
-This repository contains the accompanying code to the blogpost with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.](https://www.aisnakeoil.com/) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
+This repository contains the accompanying code to the blog post with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.](https://www.aisnakeoil.com/) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
 
-Part of the analysis for this blogpost builds on the following three publications and their accompanying code repositories, which we used for reproducing their work.
+Part of the analysis for this blog post builds on the following three publications and their accompanying code repositories, which we used for reproducing their work.
 
 **Reflexion ---**
 [Reflexion: Language Agents with Verbal Reinforcement Learning](https://arxiv.org/abs/2303.11366) ([GitHub](https://github.com/noahshinn/reflexion/blob/main/programming_runs/simple.py))
@@ -25,7 +25,7 @@ Part of the analysis for this blogpost builds on the following three publication
 #### Logging
 
 - To track inference times and costs associated with the agents, we added code at relevant points within the source code. The resulting log files are stored alongside the results from solving the HumanEval tasks in the `output_data/` subdirectories located within each agent directory.
-- **Note on interrupted runs:** It's important to note that some experimental runs were interrupted and subsequently restarted from the point of interruption to conserve costs. In particular, the accuracy reflected in the LATS jsonl files may not be entirely precise in these instances. To reproduce unmodified files, simply re-run a specific experiment from the beginning.
+- **Note on interrupted runs:** It's important to note that some experimental runs were interrupted and subsequently restarted from the point of interruption to conserve costs. In particular, the accuracy reflected in the LATS `.jsonl` files may not be entirely precise in these instances. To reproduce unmodified files, simply re-run a specific experiment from the beginning.
 
 #### Changes made to source code of agent papers
 
@@ -69,7 +69,7 @@ export OPENAI_API_KEY=<your key>
     ./run_simple.sh humaneval [model] [output_dir]
     ```
 
- - `Escalation` - We modify the simple strategy of LDB but switch the underlying model to a more expensive one if a proposed solution fails at least one of the example tests. Running the script below, will start five runs with llama-3-8b-chat-hf, gpt-3.5-turbo-0125, ​​llama-3-70b-chat-hf, gpt-4-turbo-2024-04-09 as backend fallback models.
+ - `Escalation` - We modify the simple strategy of LDB but switch the underlying model to a more expensive one if a proposed solution fails at least one of the example tests. Running the script below will start five runs with llama-3-8b-chat-hf, gpt-3.5-turbo-0125, ​​llama-3-70b-chat-hf, gpt-4-turbo-2024-04-09 as backend fallback models.
 
     ```bash
     cd ./programming
@@ -92,7 +92,7 @@ export OPENAI_API_KEY=<your key>
 
 ### To run LDB agents
 
- - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that do not use a seed generated with Reflexion. The resulting folder containig the outputs and logs will follow the nomenclature **model**+**seedmodel**.
+ - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that do not use a seed generated with Reflexion. The resulting folder containing the outputs and logs will follow the nomenclature **model**+**seedmodel**.
 
     ```bash
     cd ./programming
@@ -100,7 +100,7 @@ export OPENAI_API_KEY=<your key>
     ```
     **Note:** This assumes that the respective seed is already in the output_data directory at the appropriate location.
 
- - `LDB with Reflexion seed` - Use this if you want to reproduce LDB agents that use a seed generated with Reflexion. The resulting folder containig the outputs and logs will follow the nomenclature **model**+reflexion.
+ - `LDB with Reflexion seed` - Use this if you want to reproduce LDB agents that use a seed generated with Reflexion. The resulting folder containing the outputs and logs will follow the nomenclature **model**+reflexion.
 
     ```bash
     cd ./programming
@@ -117,7 +117,7 @@ export OPENAI_API_KEY=<your key>
 cd ./programming
 ./run_lats_humaneval.sh [model] [nr_int_tests]
 ```
-**Note:** We learned from correspondence with the original authors, that the number of internal test cases was set to 6 for GPT-3.5 and 4 for GPT-4, respectively. For more details, refer to blogpost.
+**Note:** We learned from correspondence with the original authors, that the number of internal test cases was set to 6 for GPT-3.5 and 4 for GPT-4, respectively. For more details, refer to the blog post.
 
 
 ### To run Reflexion agents
