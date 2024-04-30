@@ -2,7 +2,7 @@ dataset=$1
 model=$2
 fallback_name=$3
 strategy="simple_incr_temp"
-run_names=("run3" "run4" "run5")
+run_names=("run1" "run2" "run3" "run4" "run5")
 for run_name in "${run_names[@]}"; do
   python main.py \
     --run_name $run_name/ \

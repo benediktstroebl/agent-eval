@@ -68,7 +68,7 @@ def async_main(
                     print(f"Switched to {seed_model_name} at step {step}")
                     logger.info(f"Switched to {seed_model_name} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
                 elif step == 1:
-                    fall_back_model_name_1 = "gpt-3.5-turbo-0613"
+                    fall_back_model_name_1 = "gpt-3.5-turbo-0125"
                     model = model_factory(fall_back_model_name_1, logger=logger, client_type="openai")
                     print(f"Switched to {fall_back_model_name_1} at step {step}")
                     logger.info(f"Switched to {fall_back_model_name_1} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
@@ -78,7 +78,7 @@ def async_main(
                     print(f"Switched to {fall_back_model_name_2} at step {step}")
                     logger.info(f"Switched to {fall_back_model_name_2} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
                 elif step == 3:
-                    fall_back_model_name_3 = "gpt-4-0613"
+                    fall_back_model_name_3 = "gpt-4-turbo-2024-04-09"
                     model = model_factory(fall_back_model_name_3, logger=logger, client_type="openai")
                     print(f"Switched to {fall_back_model_name_3} at step {step}")
                     logger.info(f"Switched to {fall_back_model_name_3} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
