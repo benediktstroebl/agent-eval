@@ -69,7 +69,7 @@ export OPENAI_API_KEY=<your key>
     ./run_simple.sh humaneval [model] [output_dir]
     ```
 
- - `Escalation` - We modify the simple strategy of LDB but switch the underlying model to a more expensive one if a proposed solution fails at least one of the example tests. Running the script below will start five runs with llama-3-8b-chat-hf, gpt-3.5-turbo-0125, ​​llama-3-70b-chat-hf, gpt-4-turbo-2024-04-09 as backend fallback models.
+ - `Escalation` - We modify the simple strategy of LDB but switch the underlying model to a more expensive one if a proposed solution fails at least one of the example tests. Running the script below will start five runs with `llama-3-8b-chat-hf`, `gpt-3.5-turbo-0125`, ​​`llama-3-70b-chat-hf`, `gpt-4-turbo-2024-04-09` as backend fallback models.
 
     ```bash
     cd ./programming
