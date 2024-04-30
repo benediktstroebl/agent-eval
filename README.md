@@ -83,7 +83,7 @@ export OPENAI_API_KEY=<your key>
     ./run_simple_repeat.sh humaneval [model] [name_you_can_set]
     ```
 
- - `Warming` - For the warming baseline, we modify the Retry baseline by gradually increasing the temperature parameter across successive trials.
+ - `Warming` - For the Warming baseline, we modify the Retry baseline by gradually increasing the temperature parameter across successive trials.
 
     ```bash
     cd ./programming
