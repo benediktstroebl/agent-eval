@@ -14,15 +14,15 @@ Part of the analysis for this blogpost builds on the following three publication
 
 #### Structure
 
-    - This repository is organized so that each high-level agent has its own dedicated directory, mirroring the structure of the original repositories associated with the respective research papers.
-    - Additionally, our baseline agents are built upon the LDB codebase and are therefore housed within the LLMDebugger directory.
-    - Each of the three primary directories includes an `output_data/` folder, which contains the result logs from the experiments we conducted.
-    - The bash script referenced below for each agent can be found in the respective `programming` folder.
+- This repository is organized so that each high-level agent has its own dedicated directory, mirroring the structure of the original repositories associated with the respective research papers.
+- Additionally, our baseline agents are built upon the LDB codebase and are therefore housed within the LLMDebugger directory.
+- Each of the three primary directories includes an `output_data/` folder, which contains the result logs from the experiments we conducted.
+- The bash script referenced below for each agent can be found in the respective `programming` folder.
     
 #### Logging
 
-    - To track inference times and costs associated with the agents, we added code at relevant points within the source code. The resulting log files are stored alongside the results from solving the HumanEval tasks in the `output_data/` subdirectories located within each agent directory.
-    - **Note on interrupted runs:** It's important to note that some experimental runs were interrupted and subsequently restarted from the point of interruption to conserve costs. In particular, the accuracy reflected in the LATS jsonl files may not be entirely precise in these instances. To reproduce unmodified files, simply re-run a specific experiment from the beginning.
+- To track inference times and costs associated with the agents, we added code at relevant points within the source code. The resulting log files are stored alongside the results from solving the HumanEval tasks in the `output_data/` subdirectories located within each agent directory.
+- **Note on interrupted runs:** It's important to note that some experimental runs were interrupted and subsequently restarted from the point of interruption to conserve costs. In particular, the accuracy reflected in the LATS jsonl files may not be entirely precise in these instances. To reproduce unmodified files, simply re-run a specific experiment from the beginning.
 
 #### Changes made to source code of agent papers
 
