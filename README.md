@@ -125,6 +125,6 @@ cd ./programming
  `Reflexion` - This reproduces our runs of the Reflexion agents.
 
 ```bash
-cd ./programming
+cd ./programming_runs
 ./run_reflexion_humaneval.sh [model]
 ```
