@@ -88,7 +88,7 @@ export OPENAI_API_KEY=<your key>
 
 ### To run LDB agents
 
- -  - LDB agents require a seed file containing already-existing solutions from a model or agent, which the LDB agent then debugs. To start an LDB agent from scratch, first create the seed files using the steps listed in the simple agents and models part above.
+ -  LDB agents require a seed file containing already-existing solutions from a model or agent, which the LDB agent then debugs. To start an LDB agent from scratch, first create the seed files using the steps listed in the simple agents and models part above.
  - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that use a seed generated using the simple models or agents. The resulting folder containing the outputs and logs will follow the nomenclature **model**+**seedmodel**.
 
     ```bash
