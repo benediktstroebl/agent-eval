@@ -1,6 +1,6 @@
 # Repository to blogpost: AI leaderboards are no longer useful. It's time to switch to Pareto curves.
 
-This repo holds the code, demos, and log files for the blogpost with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.](https://www.aisnakeoil.com/) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
+This repository contains the accompanying code to the blogpost with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.](https://www.aisnakeoil.com/) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
 
 Part of the analysis for this blogpost builds on the following three publications and their accompanying code repositories, which we used for reproducing their work.
 
@@ -14,18 +14,19 @@ Part of the analysis for this blogpost builds on the following three publication
 
 #### Structure
 
-    - The repository is structured such that each high-level agent has their own directory, which resembles the original repositories of the respective paper
-    - In addition, our baseline agents are building on top of the code of LDB and are thus contained in the LLMDebugger directory
-    - Each of the three high-level directories contains a folder `output_data`, which containes the result logs of the experiments we ran
+    - This repository is organized so that each high-level agent has its own dedicated directory, mirroring the structure of the original repositories associated with the respective research papers.
+    - Additionally, our baseline agents are built upon the LDB codebase and are therefore housed within the LLMDebugger directory.
+    - Each of the three primary directories includes an `output_data/` folder, which contains the result logs from the experiments we conducted.
+    - The bash script referenced below for each agent can be found in the respective `programming` folder.
     
 #### Logging
 
-    - In order to log inference times and cost of the agents, we added code at the appropriate locations in the source code. The resulting log files are stored with the results from solving the HumanEval tasks in the `output_data` folder that is part of each agent directory. 
-    - Note on interrupted runs: Some runs where interrupted and restarted at point where we left off to save cost, acc in LATS jsonl files not accurate in those cases, in order to reproduce unmodified files one can simply rerun a run from scratch
+    - To track inference times and costs associated with the agents, we added code at relevant points within the source code. The resulting log files are stored alongside the results from solving the HumanEval tasks in the `output_data/` subdirectories located within each agent directory.
+    - **Note on interrupted runs:** It's important to note that some experimental runs were interrupted and subsequently restarted from the point of interruption to conserve costs. In particular, the accuracy reflected in the LATS jsonl files may not be entirely precise in these instances. To reproduce unmodified files, simply re-run a specific experiment from the beginning.
 
 #### Changes made to source code of agent papers
 
-In order to reproduce the work of the publications mentioned above and to fix issues, we had to make changes to the original code as provided by the authors. All of these changes are part of the commit history of this repository and can be inspected transparently.
+In order to reproduce the work of the publications mentioned above and to address encountered reproducibility issues, we had to make changes to the original code as provided by the authors. All of these changes are part of the commit history of this repository and can be inspected transparently. For more details on some of the reproducibility issues, please refer to the accompanying blog post.
 
 #### Contact
 
@@ -50,9 +51,7 @@ pip install -r requirements.txt
 export OPENAI_API_KEY=<your key>
 ```
 
-
-
-### To run LDB agents
+### To run LDB agents, simple models, and baselines
 
 #### To run simple models and baselines
 
@@ -84,7 +83,7 @@ export OPENAI_API_KEY=<your key>
     ./run_simple_incr_temp.sh humaneval [model] [name_you_can_set]
     ```
 
-#### To run LDB agents
+### To run LDB agents
 
  - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that do not use a seed generated with Reflexion. The resulting folder containig the outputs and logs will follow the nomenclature **model**+**seedmodel**.
 
@@ -122,17 +121,3 @@ cd ./programming
 cd ./programming
 ./run_reflexion_humaneval.sh [model]
 ```
-
-## Another Note
-
-Due to the nature of these experiments, it may not be feasible for individual developers to rerun the results as GPT-4 has limited access and significant API charges. All runs from the paper and additional results are logged in `./alfworld_runs/root` for decision-making, `./hotpotqa_runs/root` for reasoning, and `./programming_runs/root` for programming
-
-## Other Notes
-
-Check out the code for the original code [here](https://github.com/noahshinn/reflexion-draft)
-
-Read a blog post [here](https://nanothoughts.substack.com/p/reflecting-on-reflexion)
-
-Check out an interesting type-prediction implementation here: [OpenTau](https://github.com/GammaTauAI/opentau)
-
-For all questions, contact [noahrshinn@gmail.com](noahrshinn@gmail.com)
