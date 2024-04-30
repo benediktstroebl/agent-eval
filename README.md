@@ -1,6 +1,6 @@
 # Repository to blogpost: AI leaderboards are no longer useful. It's time to switch to Pareto curves.
 
-This repository contains the accompanying code to the blog post with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.]([https://www.aisnakeoil.com/](https://www.aisnakeoil.com/p/ai-leaderboards-are-no-longer-useful)) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
+This repository contains the accompanying code to the blog post with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.](https://www.aisnakeoil.com/p/ai-leaderboards-are-no-longer-useful)) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
 
 Part of the analysis for this blog post builds on the following three publications and their accompanying code repositories, which we used for reproducing their work.
 
