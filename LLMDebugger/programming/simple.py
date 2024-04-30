@@ -8,7 +8,7 @@ from multiprocessing import Process, Pool
 import logging
 import time
 
-def get_seed(i, item, model, num_items, pass_at_k, gen, log_path, logger):
+def get_seed(i, item, model, num_items, pass_at_k, gen, log_path):
     print(f'[Start] {i+1}')
     exe = executor_factory("python", False)
     cur_pass = 0
@@ -49,7 +49,7 @@ def async_main(
         logger: logging.Logger = None,
     ) -> None:
     gen = PyGenerator()
-    model = model_factory(model_name, logger=logger)
+    model = model_factory(model_name, logger=logger, client_type="azure")
     print_v = make_printv(verbose)
     num_items = len(dataset)
     num_success = 0
@@ -57,7 +57,7 @@ def async_main(
         for i, item in enumerate_resume(dataset, log_path, testfile=testfile):
             logger.info(f"Starting {i+1}th task", extra={"task_id": item["task_id"], "type": "task_started"})
             start_time = time.time()
-            get_seed(i, item, model, num_items, pass_at_k, gen, log_path, logger)
+            get_seed(i, item, model, num_items, pass_at_k, gen, log_path)
             end_time = time.time()
             task_time = end_time - start_time
             logger.info(f"Time taken for {i+1}th task: {end_time - start_time}", extra={"task_time": task_time, 

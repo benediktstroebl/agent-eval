@@ -61,27 +61,8 @@ def async_main(
             tests_i = [test for test in tests_i if item['entry_point'] in test and 'assert False' not in test]
             start_time = time.time()
             step = 0
-            while step < 4:
-                if step == 0:
-                    seed_model_name = "llama3-8b"
-                    model = model_factory(seed_model_name, logger=logger)
-                    print(f"Switched to {seed_model_name} at step {step}")
-                    logger.info(f"Switched to {seed_model_name} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
-                elif step == 1:
-                    fall_back_model_name_1 = "gpt-3.5-turbo-0613"
-                    model = model_factory(fall_back_model_name_1, logger=logger, client_type="openai")
-                    print(f"Switched to {fall_back_model_name_1} at step {step}")
-                    logger.info(f"Switched to {fall_back_model_name_1} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
-                elif step == 2:
-                    fall_back_model_name_2 = "llama3-70b"
-                    model = model_factory(fall_back_model_name_2, logger=logger)
-                    print(f"Switched to {fall_back_model_name_2} at step {step}")
-                    logger.info(f"Switched to {fall_back_model_name_2} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
-                elif step == 3:
-                    fall_back_model_name_3 = "gpt-4-0613"
-                    model = model_factory(fall_back_model_name_3, logger=logger, client_type="openai")
-                    print(f"Switched to {fall_back_model_name_3} at step {step}")
-                    logger.info(f"Switched to {fall_back_model_name_3} at step {step}", extra={"type": "model_switched", "new_model_name": model.name})
+            while step < 5:
+                model = model_factory(model_name, logger=logger, client_type="openai")
 
                 cur_func_impl, is_solved, token_num, cur_pass = get_seed(i, item, model, num_items, pass_at_k, gen, log_path)
                 # call the executor to return failed_test
@@ -110,7 +91,7 @@ def async_main(
         args = iter([(i, item, model, num_items, pass_at_k, gen, log_path) for i, item in enumerate_resume(dataset, log_path, testfile=testfile)])
         pool.starmap(get_seed, args)
 
-def run_simple_boosting(
+def run_simple_repeat(
         dataset: List[dict],
         model_name: str,
         pass_at_k: int,

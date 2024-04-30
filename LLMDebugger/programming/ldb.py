@@ -16,7 +16,7 @@ MODEL_BOOSTING = True
 def debug(i, item, log_path, model_name, num_items, pass_at_k, max_iters, port="", level = "block", logger = None):
     exe = PyExecutor()
     gen = PyGenerator()
-    model = model_factory(model_name, port, logger=logger)
+    model = model_factory(model_name, port, logger=logger, client_type="openai")
     cur_pass = 0
     is_solved = False
     implementations = []
@@ -30,6 +30,16 @@ def debug(i, item, log_path, model_name, num_items, pass_at_k, max_iters, port="
         # clean test_i
         tests_i = [test for test in tests_i if item['entry_point'] in test and 'assert False' not in test]
         # first attempt
+        print("SEED")
+        print(item["task_id"])
+        print(item["seed"])
+        # if there is no solution in the seed, we skip this task (happened for gpt35-0613)
+        if item["seed"] == None:
+            is_passing = False
+            is_solved = False
+            item['is_passing'] = False
+            item['is_solved'] = False
+            break
         cur_func_impl = prepare_function_from_seed(dataset_type, item["prompt"], item["seed"], item["entry_point"])
         implementations.append(cur_func_impl)
         # call the executor to return failed_test
