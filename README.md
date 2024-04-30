@@ -20,12 +20,12 @@ Part of the analysis for this blog post builds on the following three publicatio
 - This repository is organized so that each high-level agent has its own dedicated directory, mirroring the structure of the original repositories associated with the respective research papers.
 - Additionally, our baseline agents are built upon the LDB codebase and are therefore housed within the LLMDebugger directory.
 - Each of the three primary directories includes an `output_data/` folder, which contains the result logs from the experiments we conducted.
-- The bash script referenced below for each agent can be found in the respective `programming` folder.
+- The bash script referenced below for running each model/agent reported in the blog post can be found in the `programming` folder within the main directories.
     
 #### Logging
 
 - To track inference times and costs associated with the agents, we added code at relevant points within the source code. The resulting log files are stored alongside the results from solving the HumanEval tasks in the `output_data/` subdirectories located within each agent directory.
-- **Note on interrupted runs:** It's important to note that some experimental runs were interrupted and subsequently restarted from the point of interruption to conserve costs. In particular, the accuracy reflected in the LATS `.jsonl` files may not be entirely precise in these instances. To reproduce unmodified files, simply re-run a specific experiment from the beginning.
+- **Note on interrupted runs:** Some experimental runs were interrupted mid way through the HumanEval problems (e.g., due to budget limits or network errors). We restarted these runs from the point of interruption (i.e., starting at the earliest unsolved HumanEval problem) to conserve costs. This means that the accuracy reflected in the LATS `.jsonl` files is not accurate in these instances (**TODO: link to jsonl file**). You can refer to **todo: file name** for the correct accuracy numbers. (To be clear, this only affects the log files stored by LATS. It does not affect the actual accuracy of the agent, nor the results reported in the blog post.)
 
 #### Changes made to source code of agent papers
 
@@ -33,11 +33,7 @@ In order to reproduce the work of the publications mentioned above and to addres
 
 #### Additional questions and details
 
-We would like to direct all inquiries regarding this code and our implementations to the blog article and its associated appendices, which are more detailed. We have listed our contact information below in case you have any further questions after reading this.
-
-#### Contact
-
-For all questions, contact [sayashk, stroebl, arvindn]@princeton.edu
+You can refer to the blog post and its associated appendices for more details on our setup. You can contact us at [sayashk, stroebl, arvindn]@princeton.edu
 
 ## Running agents and models
 
@@ -92,7 +88,8 @@ export OPENAI_API_KEY=<your key>
 
 ### To run LDB agents
 
- - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that do not use a seed generated with Reflexion. The resulting folder containing the outputs and logs will follow the nomenclature **model**+**seedmodel**.
+ -  - LDB agents require a seed file containing already-existing solutions from a model or agent, which the LDB agent then debugs. To start an LDB agent from scratch, first create the seed files using the steps listed in the simple agents and models part above.
+ - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that use a seed generated using the simple models or agents. The resulting folder containing the outputs and logs will follow the nomenclature **model**+**seedmodel**.
 
     ```bash
     cd ./programming
@@ -117,8 +114,7 @@ export OPENAI_API_KEY=<your key>
 cd ./programming
 ./run_lats_humaneval.sh [model] [nr_int_tests]
 ```
-**Note:** We learned from correspondence with the original authors, that the number of internal test cases was set to 6 for GPT-3.5 and 4 for GPT-4, respectively. For more details, refer to the blog post.
-
+**Note:** We learned from correspondence with the original authors, that the number of internal test cases was set to 6 for GPT-3.5 and 4 for GPT-4, respectively. The blog post has more details.
 
 ### To run Reflexion agents
 
