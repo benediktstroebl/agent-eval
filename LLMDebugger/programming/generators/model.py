@@ -12,8 +12,10 @@ from transformers import GPT2Tokenizer, AutoTokenizer
 import time
 import os 
 import logging
-from config import TOGETHER_API_KEY
+from openai import AzureOpenAI
+from config import TOGETHER_API_KEY, HF_TOKEN
 os.environ["TOGETHER_API_KEY"] = TOGETHER_API_KEY
+os.environ["HF_TOKEN"] = HF_TOKEN
 
 MessageRole = Literal["system", "user", "assistant"]
 
@@ -101,15 +103,81 @@ class ModelBase():
 
 
 class GPTChat(ModelBase):
-    def __init__(self, model_name: str, key: str = "", logger: logging.Logger = None):
+    def __init__(self, model_name: str, key: str = "", logger: logging.Logger = None, client_type: str = "azure"):
         self.name = model_name
         self.logger = logger
         self.is_chat = True
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         if key != "":
-            self.client = OpenAI(api_key=key)
+            if client_type == "openai":
+                self.client = OpenAI()
+            else:
+                if "gpt-4-turbo-0125" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://gpt-35-turbo-agent-eval.openai.azure.com/"
+                    )
+                    self.name = "gpt-4-0125" # 0125
+                elif "gpt-3.5-turbo-0125" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://gpt-35-turbo-agent-eval.openai.azure.com/"
+                )
+                    self.name = "gpt-35-turbo"
+                elif "gpt-4-0613" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://agent-eval-platform.openai.azure.com/"
+                )
+                    self.name = "azure_gpt-4-0613"
+                elif "gpt-3.5-turbo-0613" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://agent-eval-platform.openai.azure.com/"
+                )
+                    self.name = "azure_gpt-35-turbo-0613"
+                    
+                else:
+                    raise ValueError("Invalid model name for Azure backend!")
         else:
-            self.client = OpenAI()
+            if client_type == "openai":
+                self.client = OpenAI()
+            else:
+                if "gpt-4-turbo-0125" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://gpt-35-turbo-agent-eval.openai.azure.com/"
+                    )
+                    self.name = "gpt-4-0125" # 0125
+                elif "gpt-3.5-turbo-0125" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://gpt-35-turbo-agent-eval.openai.azure.com/"
+                )
+                    self.name = "gpt-35-turbo"
+                elif "gpt-4-0613" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://agent-eval-platform.openai.azure.com/"
+                )
+                    self.name = "azure_gpt-4-0613"
+                elif "gpt-3.5-turbo-0613" in model_name:
+                    self.client = AzureOpenAI(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+                    api_version="2023-12-01-preview",
+                    azure_endpoint="https://agent-eval-platform.openai.azure.com/"
+                )
+                    self.name = "azure_gpt-35-turbo-0613"
+                    
+                else:
+                    raise ValueError("Invalid model name for Azure backend!")
     
     def gpt_chat(
         self,
@@ -141,7 +209,9 @@ class GPTChat(ModelBase):
                                                            "completion_tokens": response.usage.completion_tokens, 
                                                            "total_tokens": response.usage.total_tokens,
                                                             "inference_time": end_time - start_time,
+                                                            "temperature": temperature,
                                                            "model_name": self.name,
+                                                           "max_tokens": max_tokens,
                                                            "type": "api_call"})
         except Exception as e:
             print("GPT Error:", str(e))
@@ -166,8 +236,10 @@ class GPTChat(ModelBase):
                                                            "prompt_tokens": response.usage.prompt_tokens,
                                                            "completion_tokens": response.usage.completion_tokens, 
                                                            "total_tokens": response.usage.total_tokens,
+                                                           "temperature": temperature,
                                                             "inference_time": end_time - start_time,
                                                            "model_name": self.name,
+                                                           "max_tokens": max_tokens,
                                                            "type": "api_call"})
             else:
                 assert False, "GPT API error: " + str(e)
@@ -181,13 +253,13 @@ class GPTChat(ModelBase):
 
 
 class GPT4(GPTChat):
-    def __init__(self, model_name, key, logger):
-        super().__init__(model_name, key, logger)
+    def __init__(self, model_name, key, logger, client_type="azure"):
+        super().__init__(model_name, key, logger, client_type=client_type)
 
 
 class GPT35(GPTChat):
-    def __init__(self, model_name, key, logger):
-        super().__init__(model_name, key, logger)
+    def __init__(self, model_name, key, logger, client_type="azure"):
+        super().__init__(model_name, key, logger, client_type=client_type)
 
 
 class VLLMModelBase(ModelBase):
@@ -198,11 +270,17 @@ class VLLMModelBase(ModelBase):
     def __init__(self, model, port="8000", logger: logging.Logger = None):
         super().__init__(model)
         self.model = model
+        self.name = model
         self.logger = logger
         self.vllm_client = OpenAI(api_key="EMPTY", base_url=f"http://localhost:{port}/v1")
         self.together_client = OpenAI(api_key=os.environ.get("TOGETHER_API_KEY"), base_url="https://api.together.xyz/v1")
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model)
+        if model == "meta-llama/Llama-3-70b-chat-hf":
+            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-70B-Instruct", token=HF_TOKEN)
+        elif model == "meta-llama/Llama-3-8b-chat-hf":
+            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct", token=HF_TOKEN)
+        else:
+            self.tokenizer = AutoTokenizer.from_pretrained(model)
         self.max_length = 7000
     
     def vllm_chat(
@@ -228,16 +306,18 @@ class VLLMModelBase(ModelBase):
                     stop=stop,
                     frequency_penalty=0.0,
                     presence_penalty=0.0,
-                    n=num_comps,
-                )
+                    n=num_comps                
+                    )
                 end_time = time.time()
                 self.logger.info("Together API call", extra={"input_messages": prompt,
                                                            "output_messages": responses.choices[0].text if num_comps == 1 else [response.choices[0].text for response in responses], 
                                                            "prompt_tokens": responses.usage.prompt_tokens,
                                                            "completion_tokens": responses.usage.completion_tokens, 
-                                                           "total_tokens": responses.responses.total_tokens,
+                                                           "total_tokens": responses.usage.total_tokens,
+                                                           "temperature": temperature,
                                                             "inference_time": end_time - start_time,
-                                                           "model_name": self.model,
+                                                           "model_name": self.name,
+                                                            "max_tokens": max_tokens,
                                                            "type": "api_call"})
 
             except Exception as e:
@@ -274,5 +354,5 @@ class StarCoder(VLLMModelBase):
 
 
 class CodeLlama(VLLMModelBase):
-    def __init__(self, port=""):
-        super().__init__("codellama/CodeLlama-34b-Instruct-hf", port)
+    def __init__(self, model_name, port="", logger: logging.Logger = None):
+        super().__init__(model_name, port, logger)

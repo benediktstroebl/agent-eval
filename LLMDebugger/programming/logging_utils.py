@@ -41,5 +41,14 @@ class JsonFormatter(logging.Formatter):
             log_record["total_tokens"] = record.total_tokens
         if hasattr(record, "type"):
             log_record["type"] = record.type
+        if hasattr(record, "task_is_solved"):
+            log_record["task_is_solved"] = record.task_is_solved
+        if hasattr(record, "boosting_steps"):
+            log_record["boosting_steps"] = record.boosting_steps
+        if hasattr(record, "new_model_name"):
+            log_record["new_model_name"] = record.new_model_name
+        if hasattr(record, "temperature"):
+            log_record["temperature"] = record.temperature
+
         
         return json.dumps(log_record)

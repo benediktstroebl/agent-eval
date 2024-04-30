@@ -2,8 +2,9 @@ import os
 import argparse
 from ldb import run_ldb
 from simple import run_simple
-from repeat_simple import run_repeat_simple
+from simple_repeat import run_simple_repeat
 from simple_boosting import run_simple_boosting
+from simple_incr_temp import run_simple_incr_temp
 from utils import read_jsonl, read_jsonl_gz
 import logging
 from logging_utils import JsonFormatter
@@ -48,12 +49,14 @@ def strategy_factory(strategy: str):
     
     if strategy == "simple":
         return kwargs_wrapper_gen(run_simple, delete_keys=["max_iters", "seedfile", "port", "level"])
-    if strategy == "repeat_simple":
-        return kwargs_wrapper_gen(run_repeat_simple, delete_keys=["pass_at_k", "seedfile", "n_proc", "port", "level"])
     elif strategy == "ldb":
         return kwargs_wrapper_gen(run_ldb)
     elif strategy == "simple_boosting":
         return kwargs_wrapper_gen(run_simple_boosting, delete_keys=["max_iters", "seedfile", "port", "level"])
+    elif strategy == "simple_repeat":
+        return kwargs_wrapper_gen(run_simple_repeat, delete_keys=["max_iters", "seedfile", "port", "level"])
+    elif strategy == "simple_incr_temp":
+        return kwargs_wrapper_gen(run_simple_incr_temp, delete_keys=["max_iters", "seedfile", "port", "level"])
     else:
         raise ValueError(f"Strategy `{strategy}` is not supported")
 
@@ -108,6 +111,12 @@ pass@k: {args.pass_at_k}
     else:
         raise ValueError(
             f"Dataset path `{args.dataset_path}` is not supported")
+
+    # if dataset has key "name", replace key with "task_id"
+    if "name" in dataset[0]:
+        for item in dataset:
+            item["task_id"] = item["name"]
+            del item["name"]
 
     print(f"Loaded {len(dataset)} examples")
     # start the run
