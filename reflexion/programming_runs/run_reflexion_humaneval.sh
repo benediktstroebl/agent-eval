@@ -1,6 +1,6 @@
 model=$1
 
-run_names=("run1")
+run_names=("run1" "run2" "run3" "run4" "run5")
 for run_name in "${run_names[@]}"; do
   python main.py \
   --run_name $run_name \
