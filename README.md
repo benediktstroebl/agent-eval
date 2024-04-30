@@ -1,6 +1,6 @@
 # Repository to blogpost: AI leaderboards are no longer useful. It's time to switch to Pareto curves.
 
-This repository contains the accompanying code to the blog post with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.](https://www.aisnakeoil.com/) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
+This repository contains the accompanying code to the blog post with the title [AI leaderboards are no longer useful. It's time to switch to Pareto curves.](https://www.aisnakeoil.com/p/ai-leaderboards-are-no-longer-useful)) by Sayash Kapoor, Benedikt Stroebl, and Arvind Narayanan. 
 
 Part of the analysis for this blog post builds on the following three publications and their accompanying code repositories, which we used for reproducing their work.
 
@@ -88,14 +88,15 @@ export OPENAI_API_KEY=<your key>
 
 ### To run LDB agents
 
- -  - LDB agents require a seed file containing already-existing solutions from a model or agent, which the LDB agent then debugs. To start an LDB agent from scratch, first create the seed files using the steps listed in the simple agents and models part above.
+ LDB agents require a seed file containing already-existing solutions from a model or agent, which the LDB agent then debugs. To start an LDB agent from scratch, first create the seed files using the steps listed in the simple agents and models part above.
+ 
  - `LDB with seed from simple strategy` - Use this if you want to reproduce LDB agents that use a seed generated using the simple models or agents. The resulting folder containing the outputs and logs will follow the nomenclature **model**+**seedmodel**.
 
     ```bash
     cd ./programming
     ./run_ldb.sh humaneval [model] [seedmodel]
     ```
-    **Note:** This assumes that the respective seed is already in the output_data directory at the appropriate location.
+    **Note:** This assumes that the respective seed is already in the `output_data/` directory at the appropriate location.
 
  - `LDB with Reflexion seed` - Use this if you want to reproduce LDB agents that use a seed generated with Reflexion. The resulting folder containing the outputs and logs will follow the nomenclature **model**+reflexion.
 
