@@ -31,6 +31,10 @@ Part of the analysis for this blogpost builds on the following three publication
 
 In order to reproduce the work of the publications mentioned above and to address encountered reproducibility issues, we had to make changes to the original code as provided by the authors. All of these changes are part of the commit history of this repository and can be inspected transparently. For more details on some of the reproducibility issues, please refer to the accompanying blog post.
 
+#### Additional questions and details
+
+We would like to direct all inquiries regarding this code and our implementations to the blog article and its associated appendices, which are more detailed. We have listed our contact information below in case you have any further questions after reading this.
+
 #### Contact
 
 For all questions, contact [sayashk, stroebl, arvindn]@princeton.edu
