@@ -4,13 +4,16 @@ This repository contains the accompanying code to the blogpost with the title [A
 
 Part of the analysis for this blogpost builds on the following three publications and their accompanying code repositories, which we used for reproducing their work.
 
+**Reflexion ---**
 [Reflexion: Language Agents with Verbal Reinforcement Learning](https://arxiv.org/abs/2303.11366) ([GitHub](https://github.com/noahshinn/reflexion/blob/main/programming_runs/simple.py))
 
+**LDB ---**
 [LDB: A Large Language Model Debugger via Verifying Runtime Execution Step by Step](https://arxiv.org/abs/2402.16906) ([GitHub](https://github.com/floridsleeves/llmdebugger))
 
+**LATS ---**
 [Language Agent Tree Search Unifies Reasoning Acting and Planing in Language Models](https://arxiv.org/abs/2310.04406) ([GitHub](https://github.com/andyz245/LanguageAgentTreeSearch))
 
-### General notes on this repository
+### General notes
 
 #### Structure
 
