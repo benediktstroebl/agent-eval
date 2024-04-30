@@ -41,9 +41,9 @@ For all questions, contact [sayashk, stroebl, arvindn]@princeton.edu
 
 ## Running agents and models
 
-To get started:
+To set up the environments to run each agent, follow these steps:
 
-1. Clone this repo and move to the HotPotQA directory:
+1. Clone this repo and move to the respective agent directory:
 ```bash
 git clone https://github.com/benediktstroebl/agent-eval.git
 ```
