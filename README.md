@@ -13,8 +13,6 @@ Part of the analysis for this blog post builds on the following three publicatio
 **LATS ---**
 [Language Agent Tree Search Unifies Reasoning Acting and Planing in Language Models](https://arxiv.org/abs/2310.04406) ([GitHub](https://github.com/andyz245/LanguageAgentTreeSearch))
 
-[Language Agent Tree Search Unifies Reasoning Acting and Planing in Language Models](https://arxiv.org/abs/2310.04406) ([GitHub](https://github.com/andyz245/LanguageAgentTreeSearch))
-
 ### General notes
 
 #### Structure
