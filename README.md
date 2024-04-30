@@ -96,7 +96,7 @@ export OPENAI_API_KEY=<your key>
     cd ./programming
     ./run_ldb.sh humaneval [model] [seedmodel]
     ```
-    **Note:** This assumes that the respective seed is already in the output_data directory at the appropriate location.
+    **Note:** This assumes that the respective seed is already in the `output_data/` directory at the appropriate location.
 
  - `LDB with Reflexion seed` - Use this if you want to reproduce LDB agents that use a seed generated with Reflexion. The resulting folder containing the outputs and logs will follow the nomenclature **model**+reflexion.
 
